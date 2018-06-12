@@ -17,13 +17,6 @@ if [ ! -z "$SSH_KEY" ]; then
  chmod 600 /root/.ssh/id_rsa
 fi
 
-# Set custom webroot
-if [ ! -z "$WEBROOT" ]; then
- sed -i "s#root /var/www/html;#root ${WEBROOT};#g" /etc/nginx/sites-available/default.conf
-else
- webroot=/var/www/html
-fi
-
 # Setup git variables
 if [ ! -z "$GIT_EMAIL" ]; then
  git config --global user.email "$GIT_EMAIL"
@@ -77,6 +70,13 @@ if [ -f /var/www/html/conf/nginx/nginx-site-ssl.conf ]; then
   cp /var/www/html/conf/nginx/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 fi
 
+
+# Set custom webroot
+if [ ! -z "$WEBROOT" ]; then
+ sed -i "s#root /var/www/html;#root ${WEBROOT};#g" /etc/nginx/sites-available/default.conf
+else
+ webroot=/var/www/html
+fi
 
 # Prevent config files from being filled to infinity by force of stop and restart the container
 lastlinephpconf="$(grep "." /usr/local/etc/php-fpm.conf | tail -1)"
